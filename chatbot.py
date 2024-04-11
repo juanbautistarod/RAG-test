@@ -38,18 +38,34 @@ def vectorize_text(uploaded_files, vector_store):
             with open(temp_filepath, 'wb') as f:
                 f.write(file.getvalue())
 
-            # Process TXT
-            if uploaded_file.name.endswith('txt'):
-                file = [uploaded_file.read().decode()]
+           # Load the PDF
+            docs = []
+            loader = PyPDFLoader(temp_filepath)
+            docs.extend(loader.load())
 
-                text_splitter = RecursiveCharacterTextSplitter(
-                    chunk_size = 1500,
-                    chunk_overlap  = 100
-                )
+            # Create the text splitter
+            text_splitter = RecursiveCharacterTextSplitter(
+                chunk_size = 1500,
+                chunk_overlap  = 100
+            )
 
-                texts = text_splitter.create_documents(file, [{'source': uploaded_file.name}])
-                vector_store.add_documents(texts)
-                st.info(f"Loaded {len(texts)} chunks")
+            # Vectorize the PDF and load it into the Astra DB Vector Store
+            pages = text_splitter.split_documents(docs)
+            vector_store.add_documents(pages)  
+            st.info(f"{len(pages)} pages loaded.")
+                
+            # # Process TXT
+            # elif uploaded_file.name.endswith('txt'):
+            #     file = [uploaded_file.read().decode()]
+
+            #     text_splitter = RecursiveCharacterTextSplitter(
+            #         chunk_size = 1500,
+            #         chunk_overlap  = 100
+            #     )
+
+            #     texts = text_splitter.create_documents(file, [{'source': uploaded_file.name}])
+            #     vector_store.add_documents(texts)
+            #     st.info(f"Loaded {len(texts)} chunks")
 
 # Cache prompt for future runs
 @st.cache_data()
@@ -129,8 +145,8 @@ else:
     # Include the upload form for new data to be Vectorized
     with st.sidebar:
         st.divider()
-        uploaded_file = st.file_uploader('Upload a document for additional context', type=['txt'], accept_multiple_files=True)
-        submitted = st.button('Save to Astra DB')
+        uploaded_file = st.file_uploader('Carga un documento para más contexto:', type=['pdf'], accept_multiple_files=True)
+        submitted = st.button('Cargar en Astra DB')
         if submitted:
             vectorize_text(uploaded_file, vector_store)
 
