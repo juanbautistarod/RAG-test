@@ -1,13 +1,14 @@
+import tempfile
+import os
 import streamlit as st
-import tempfile, os
 from langchain_openai import OpenAIEmbeddings
 from langchain_openai import ChatOpenAI
 from langchain_community.vectorstores import AstraDB
+from langchain_community.document_loaders import PyPDFLoader
 from langchain.schema.runnable import RunnableMap
 from langchain.prompts import ChatPromptTemplate
 from langchain.callbacks.base import BaseCallbackHandler
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import PyPDFLoader
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -15,6 +16,17 @@ load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY")
 astra_db_endpoint = os.getenv("ASTRA_API_ENDPOINT")
 astra_db_secret = os.getenv("ASTRA_TOKEN")
+
+CSS = """
+<style>
+    div.stButton > button:first-child {
+        display: block;
+        margin: 0 auto;
+    }
+</style>
+"""
+
+st.markdown(CSS, unsafe_allow_html=True)
 
 
 # Streaming call back handler for responses
@@ -30,12 +42,12 @@ class StreamHandler(BaseCallbackHandler):
 
 # Function for Vectorizing uploaded data into Astra DB
 def vectorize_text(uploaded_files, vector_store):
-    for uploaded_file in uploaded_files:
-        if uploaded_file is not None:
+    for uf in uploaded_files:
+        if uf is not None:
 
             # Write to temporary file
             temp_dir = tempfile.TemporaryDirectory()
-            file = uploaded_file
+            file = uf
             print(f"""Processing: {file}""")
             temp_filepath = os.path.join(temp_dir.name, file.name)
             with open(temp_filepath, "wb") as f:
@@ -57,8 +69,8 @@ def vectorize_text(uploaded_files, vector_store):
             st.info(f"{len(pages)} pages loaded.")
 
             # # Process TXT
-            # elif uploaded_file.name.endswith('txt'):
-            #     file = [uploaded_file.read().decode()]
+            # elif uf.name.endswith('txt'):
+            #     file = [uf.read().decode()]
 
             #     text_splitter = RecursiveCharacterTextSplitter(
             #         chunk_size = 1500,
@@ -77,13 +89,14 @@ def load_prompt():
                 Eres amigable y respondes extensamente con múltiples oraciones. Prefieres utilizar viñetas para resumir. 
                 Contestas únicamente en español.
 
-CONTEXT:    
-{context}
+                CONTEXT:    
+                {context}
 
-QUESTION:
-{question}
+                QUESTION:
+                {question}
 
-YOUR ANSWER:"""
+                YOUR ANSWER: 
+                """
     return ChatPromptTemplate.from_messages([("system", template)])
 
 
@@ -97,6 +110,7 @@ def load_chat_model(openai_api_key):
         streaming=True,
         verbose=True,
     )
+
 
 # Cache the Astra DB Vector Store for future runs
 @st.cache_resource(show_spinner="Conectando a base de datos...")
@@ -156,7 +170,7 @@ else:
 
     # Include the upload form for new data to be Vectorized
     with st.sidebar:
-        st.divider()
+        # st.divider()
         uploaded_file = st.file_uploader(
             "Carga un documento para más contexto:",
             type=["pdf"],
