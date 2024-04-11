@@ -48,7 +48,7 @@ def vectorize_text(uploaded_files, vector_store):
 
             # Create the text splitter
             text_splitter = RecursiveCharacterTextSplitter(
-                chunk_size=1500, chunk_overlap=100
+                chunk_size=1000, chunk_overlap=250
             )
 
             # Vectorize the PDF and load it into the Astra DB Vector Store
@@ -73,10 +73,11 @@ def vectorize_text(uploaded_files, vector_store):
 # Cache prompt for future runs
 @st.cache_data()
 def load_prompt():
-    template = """You're a helpful AI assistent tasked to answer the user's questions.
-You're friendly and you answer extensively with multiple sentences. You prefer to use bulletpoints to summarize.
+    template = """Eres un útil asistente de IA encargado de responder las preguntas del usuario.
+                Eres amigable y respondes extensamente con múltiples oraciones. Prefieres utilizar viñetas para resumir. 
+                Contestas únicamente en español.
 
-CONTEXT:
+CONTEXT:    
 {context}
 
 QUESTION:
@@ -98,7 +99,7 @@ def load_chat_model(openai_api_key):
     )
 
 # Cache the Astra DB Vector Store for future runs
-@st.cache_resource(show_spinner="Connecting to Astra DB Vector Store")
+@st.cache_resource(show_spinner="Conectando a base de datos...")
 def load_vector_store(_astra_db_endpoint, astra_db_secret, openai_api_key):
     # Connect to the Vector Store
     vector_store = AstraDB(
@@ -161,7 +162,7 @@ else:
             type=["pdf"],
             accept_multiple_files=True,
         )
-        submitted = st.button("Cargar en Astra DB")
+        submitted = st.button("Cargar Documento")
         if submitted:
             vectorize_text(uploaded_file, vector_store)
 
