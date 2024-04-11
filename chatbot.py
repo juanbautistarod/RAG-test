@@ -97,7 +97,6 @@ def load_chat_model(openai_api_key):
         verbose=True,
     )
 
-
 # Cache the Astra DB Vector Store for future runs
 @st.cache_resource(show_spinner="Connecting to Astra DB Vector Store")
 def load_vector_store(_astra_db_endpoint, astra_db_secret, openai_api_key):
@@ -124,8 +123,8 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 # Draw a title and some markdown
-st.title("Melo AI Chatbot")
-st.markdown("""Preguntame lo que quieras perro:""")
+st.title("PoC Chatbot")
+st.markdown("""Qué precisas saber?""")
 
 # Get the secrets
 
