@@ -8,6 +8,12 @@ from langchain.prompts import ChatPromptTemplate
 from langchain.callbacks.base import BaseCallbackHandler
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader
+from dotenv import load_dotenv
+load_dotenv()
+
+openai_api_key = os.getenv('OPENAI_API_KEY')
+astra_db_endpoint = os.getenv('ASTRA_DB_ENDPOINT')
+astra_db_secret = os.getenv('ASTRA_DB_SECRET')
 
 # Streaming call back handler for responses
 class StreamHandler(BaseCallbackHandler):
@@ -101,9 +107,15 @@ st.title("Melo AI Chatbot")
 st.markdown("""Preguntame lo que quieras perro:""")
 
 # Get the secrets
-astra_db_endpoint = st.sidebar.text_input('Astra DB Endpoint', type="password")
-astra_db_secret = st.sidebar.text_input('Astra DB Secret', type="password")
-openai_api_key = st.sidebar.text_input('OpenAI API Key', type="password")
+
+# astra_db_endpoint = st.sidebar.text_input('Astra DB Endpoint', type="password")
+# astra_db_secret = st.sidebar.text_input('Astra DB Secret', type="password")
+# openai_api_key = st.sidebar.text_input('OpenAI API Key', type="password")
+
+openai_api_key = os.getenv('OPENAI_API_KEY')
+astra_db_endpoint = os.getenv('ASTRA_DB_ENDPOINT')
+astra_db_secret = os.getenv('ASTRA_DB_SECRET')
+
 
 # Draw all messages, both user and bot so far (every time the app reruns)
 for message in st.session_state.messages:
