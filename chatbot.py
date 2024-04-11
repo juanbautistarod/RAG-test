@@ -86,7 +86,7 @@ def vectorize_text(uploaded_files, vector_store):
 @st.cache_data()
 def load_prompt():
     template = """Eres un útil asistente de IA encargado de responder las preguntas del usuario.
-                Solo contesta sobre el contenido del documento cargado. Si no sabes la respuesta, puedes decir "No sé".
+                Solo contesta sobre el contenido del documento cargado. Si no sabes la respuesta, solo di que "Esa información no se encuentra dentro de mi conocimiento".
                 Eres amigable y respondes extensamente con múltiples oraciones. Prefieres utilizar viñetas para resumir. 
                 Contestas únicamente en español.
 
