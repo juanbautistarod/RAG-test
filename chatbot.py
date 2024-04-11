@@ -12,8 +12,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 openai_api_key = os.getenv('OPENAI_API_KEY')
-astra_db_endpoint = os.getenv('ASTRA_DB_ENDPOINT')
-astra_db_secret = os.getenv('ASTRA_DB_SECRET')
+astra_db_endpoint = os.getenv('ASTRA_API_ENDPOINT')
+astra_db_secret = os.getenv('ASTRA_TOKEN')
 
 # Streaming call back handler for responses
 class StreamHandler(BaseCallbackHandler):
@@ -111,11 +111,6 @@ st.markdown("""Preguntame lo que quieras perro:""")
 # astra_db_endpoint = st.sidebar.text_input('Astra DB Endpoint', type="password")
 # astra_db_secret = st.sidebar.text_input('Astra DB Secret', type="password")
 # openai_api_key = st.sidebar.text_input('OpenAI API Key', type="password")
-
-openai_api_key = os.getenv('OPENAI_API_KEY')
-astra_db_endpoint = os.getenv('ASTRA_DB_ENDPOINT')
-astra_db_secret = os.getenv('ASTRA_DB_SECRET')
-
 
 # Draw all messages, both user and bot so far (every time the app reruns)
 for message in st.session_state.messages:
