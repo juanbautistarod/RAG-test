@@ -97,9 +97,8 @@ if 'messages' not in st.session_state:
     st.session_state.messages = []
 
 # Draw a title and some markdown
-st.title("Your personal Efficiency Booster")
-st.markdown("""Generative AI is considered to bring the next Industrial Revolution.  
-Why? Studies show a **37% efficiency boost** in day to day work activities!""")
+st.title("Melo AI Chatbot")
+st.markdown("""Preguntame lo que quieras perro:""")
 
 # Get the secrets
 astra_db_endpoint = st.sidebar.text_input('Astra DB Endpoint', type="password")
